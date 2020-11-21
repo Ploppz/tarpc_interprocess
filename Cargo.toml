@@ -1,0 +1,28 @@
+[package]
+name = "a"
+version = "0.1.0"
+authors = ["Erlend Langseth <3rlendhl@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tarpc = {version = "0.23.1", features = ["tokio1", "serde-transport", "serde1"]}
+tokio = {version = "=0.3.2", features = ["rt", "macros", "rt-multi-thread"]}
+tokio-util = {version = "0.5.0", features = ["compat"]}
+tokio-serde = { version = "0.6.1", features = ["bincode"] }
+futures = "0.3.8"
+interprocess = {version = "1.0", features=["nonblocking"]}
+serde = {version = "1.0.117"}
+
+[lib]
+name = "tarpc_interprocess"
+path = "src/lib.rs"
+
+[[bin]]
+name = "server"
+path = "src/server.rs"
+
+[[bin]]
+name = "client"
+path = "src/client.rs"
