@@ -1,5 +1,5 @@
-use tarpc_interprocess::*;
 use interprocess::nonblocking::local_socket::*;
+use tarpc_interprocess::*;
 
 use tarpc::{context, rpc::client::Config, serde_transport::Transport};
 use tokio_util::compat::FuturesAsyncReadCompatExt;
@@ -8,6 +8,8 @@ use tokio_serde::formats::Bincode;
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
+    let (_log, _guard) = create_stdout_logger(slog::Level::Debug).await;
+
     let stream = LocalSocketStream::connect("/tmp/example.sock")
         .await
         .unwrap();

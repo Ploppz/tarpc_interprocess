@@ -7,13 +7,24 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-tarpc = {version = "0.23.1", features = ["tokio1", "serde-transport", "serde1"]}
+# tarpc = {version = "0.23.1", features = ["tokio1", "serde-transport", "serde1"]}
+tarpc = {path = "../rust/tarpc/tarpc", features = ["tokio1", "serde-transport", "serde1"]}
+
 tokio = {version = "=0.3.2", features = ["rt", "macros", "rt-multi-thread"]}
 tokio-util = {version = "0.5.0", features = ["compat"]}
 tokio-serde = { version = "0.6.1", features = ["bincode"] }
 futures = "0.3.8"
-interprocess = {version = "1.0", features=["nonblocking"]}
+# interprocess = {version = "1.0", features=["nonblocking"]}
+interprocess = {path = "../interprocess", features=["nonblocking"]}
 serde = {version = "1.0.117"}
+
+
+slog = {version = "2.5.2", features = ["max_level_trace", "release_max_level_debug"]}
+slog-term = "2.4.1"
+slog-async = "2.3.0"
+slog-stdlog = "4.0.0"
+slog-scope = "4.1.2"
+log = "0.4.8"
 
 [lib]
 name = "tarpc_interprocess"

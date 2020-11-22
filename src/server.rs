@@ -9,6 +9,8 @@ use tokio_util::compat::FuturesAsyncReadCompatExt;
 
 #[tokio::main]
 async fn main() -> io::Result<()> {
+    let (_log, _guard) = create_stdout_logger(slog::Level::Debug).await;
+
     let incoming = LocalSocketListener::bind("/tmp/example.sock")
         .await
         .unwrap()
@@ -30,7 +32,7 @@ async fn main() -> io::Result<()> {
         })
         // Max 10 channels.
         .buffer_unordered(10)
-        .for_each(|_| async {})
+        .for_each(|()| async {})
         .await;
 
     Ok(())
