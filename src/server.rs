@@ -1,7 +1,10 @@
 use tarpc_interprocess::*;
 use futures::prelude::*;
 use interprocess::nonblocking::local_socket::*;
-use std::io;
+use std::{
+    io,
+    net::IpAddr
+};
 use tarpc::serde_transport::Transport;
 use tarpc::{rpc::server::Channel, server};
 use tokio_serde::formats::Bincode;
@@ -11,21 +14,15 @@ use tokio_util::compat::FuturesAsyncReadCompatExt;
 async fn main() -> io::Result<()> {
     let (_log, _guard) = create_stdout_logger(slog::Level::Debug).await;
 
-    let incoming = LocalSocketListener::bind("/tmp/example.sock")
-        .await
-        .unwrap()
-        .incoming()
-        .map(|stream| match stream {
-            Ok(stream) => {
-                // `stream` implements `AsyncRead` + `AsyncWrite`
-                println!("Incoming connection");
-                Transport::from((stream.compat(), Bincode::default()))
-            }
-            Err(e) => panic!("{}", e),
+    let server_addr = (IpAddr::from([0, 0, 0, 0]), 5555);
+    let mut listener = tarpc::serde_transport::tcp::listen(&server_addr, Bincode::default).await?;
+    listener.config_mut().max_frame_length(4294967296);
+    let listener = listener
+        .map(|transport| {
+            transport.unwrap()
         });
-
     server::new(server::Config::default())
-        .incoming(incoming)
+        .incoming(listener)
         .map(|channel| {
             println!("Creating server");
             channel.respond_with(HelloServer.serve()).execute()
